@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*-
+"""
+ファイルから文字列のペアを読み込み、辞書に登録するスクリプト
+cf. https://docs.python.org/ja/3/tutorial/inputoutput.html#reading-and-writing-files
+
+### dirlist.txt には、以下のような文字列が記載されている。
+temp: c:\temp\
+Windows: c:\Windows\
+System32: C:\Windows\System32\
+"""
+
+
+# ファイルオブジェクトを扱うときに with キーワードを使うのは良い習慣です。 
+# その利点は、処理中に例外が発生しても必ず最後にファイルをちゃんと閉じることです。 
+
+# open() は file object を返します。 open(filename, mode) の形式。
+# mode は、 r, w, a, r+
+# r: 読み取り専用。 mode引数を省略した場合、'r' であると仮定されます。
+# w: 書き込み専用 (同名の既存のファイルがあれば消去されます)
+# a: ファイルを追記用に開きます。ファイルに書き込まれた内容は自動的にファイルの終端に追加されます。
+# r+: ファイルを読み書き両用に開きます。
+
+
+dictionary = {}
+
+with open('dirlist.txt', 'r') as f:
+    read_data = [x.rstrip() for x in f.readlines()]
+
+    for list_item in read_data:
+        k, v = list_item.split()
+        print(k)
+        print(v)
+
+        dictionary[k] = [v]
+
+print(dictionary)
+
+
+# ファイルを閉じる
+f.close
