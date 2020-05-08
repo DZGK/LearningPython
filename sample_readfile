@@ -31,7 +31,7 @@ with open('dirlist.txt', 'r') as f:
         print(k)
         print(v)
 
-        dictionary[k] = [v]
+        dictionary[k] = v
 
 print(dictionary)
 
