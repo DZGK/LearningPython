@@ -1,4 +1,25 @@
-# for を作ったリストの作成
+# sample1
+## for を作ったリストの作成
 list = [[7 for i in range(4)] for i in range(5)]
-
 print(list)
+
+
+# sample2
+## list から要素を取り出し、アスキーアートを表示する。
+
+letter_A = [[0,0,1,1,0,0],
+            [0,1,0,0,1,0],
+            [1,0,0,0,0,1],
+            [1,1,1,1,1,1],
+            [1,0,0,0,0,1],
+            [1,0,0,0,0,1]]
+
+# リスト letter_A を行単位で文字列に変換する
+for line in letter_A:
+    # 行単位でマークに変換する
+    for dot in line:
+        if dot == 1:
+            print("@", end="")
+        else:
+            print(" ", end="")
+    print("")
