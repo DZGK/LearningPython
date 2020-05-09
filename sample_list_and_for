@@ -1,0 +1,4 @@
+# for を作ったリストの作成
+list = [[7 for i in range(4)] for i in range(5)]
+
+print(list)
