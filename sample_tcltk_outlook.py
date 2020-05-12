@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Tcl/Tk のサンプル
-folderlist から Outlook のフォルダの一覧を読み取り、起動ボタンを表示する。
-ボタンが押されると、指定の Outlook フォルダが開くというスクリプト
-
 cf. http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/event-types.html
 cf. http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/event-modifiers.html
 """
 import tkinter as tk
 import subprocess
+
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -32,12 +30,14 @@ class Application(tk.Frame):
         # ファイルを閉じる
         f.close
 
+        self.labels =[]
         # リンクごとにボタンを生成する
         for key in linklist:
             label = key
             folder = linklist[key]
 
             self.label = tk.Button(self)
+            self.labels.append(self.label)
             self.label["text"] = label
             self.label.bind("<Enter>", self.change_color_true)
             self.label.bind("<Leave>", self.change_color_false)
@@ -45,9 +45,17 @@ class Application(tk.Frame):
             self.label["anchor"] = "w"
             self.label.pack(anchor="w", fill="x")
 
+
+        self.quit = tk.Button(self, text="UPDATE", fg="blue",
+                              command=self.update_list)
+        self.quit.pack(anchor="w")
+
+
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)
         self.quit.pack(side="bottom", anchor="w")
+          
+        
 
     def run_it(self, folder):
         def run_outlook():
@@ -70,6 +78,51 @@ class Application(tk.Frame):
         print("chagen_MenuColor")
         event.widget["bg"] = "teal"
         event.widget["fg"] = "white"
+
+
+    def update_list(self):
+      #  print(self.label["text"])
+        print(self.labels)
+        self.labels[3]["text"] = "ヘムレンさん"
+#        for i in self.label:
+#            print(self.i["text"])
+#        # フォルダリストからのデータの読み取り
+#        linklist = {}
+#        with open('folderlist.txt', 'r') as f:
+#            read_data = [x.rstrip() for x in f.readlines()]
+#
+#            for list_item in read_data:
+#                k, v = list_item.split(",")
+#                linklist[k] = v
+#        print(linklist)
+#
+#
+#        # ファイルを閉じる
+#        f.close
+#
+#        # リンクごとにボタンを生成する
+#        for key in linklist:
+#            label = key
+#            folder = linklist[key]
+#
+#            self.label = tk.Button(self)
+#            self.label["text"] = label
+#            self.label.bind("<Enter>", self.change_color_true)
+#            self.label.bind("<Leave>", self.change_color_false)
+#            self.label["command"] = self.run_it(folder)
+#            self.label["anchor"] = "w"
+#            self.label.pack(anchor="w", fill="x")
+#
+#
+#        self.quit = tk.Button(self, text="UPDATE", fg="blue",
+#                              command=self.update_list)
+#        self.quit.pack(anchor="w")
+#
+#
+#        self.quit = tk.Button(self, text="QUIT", fg="red",
+#                              command=self.master.destroy)
+#        self.quit.pack(side="bottom", anchor="w")
+#        
 
 
 # 処理開始
