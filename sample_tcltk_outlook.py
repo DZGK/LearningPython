@@ -3,12 +3,20 @@
 Tcl/Tk のサンプル
 cf. http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/event-types.html
 cf. http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/event-modifiers.html
+
+## 変更点
+1. folderlist_file をスクリプト格納場所から取得するようにする。
+2. "tag:" の部分が連続している場合には同じ背景色を付ける
 """
 import tkinter as tk
 import subprocess
+import re
+import os
 
 
-folderlist_file = "folderlist.txt"
+# スクリプトの格納場所から folderlist を探すようにする。
+cwd = os.getcwd()
+folderlist_file = cwd + "\\" + "folderlist.txt"
 
 
 class Application(tk.Frame):
@@ -33,21 +41,55 @@ class Application(tk.Frame):
         f.close
 
 
-#        リンクごとにボタンを生成する。生成したボタンは link_buttons に格納する。
+#       生成されたボタンを格納するリスト。リストに格納することでボタンンを管理できるようにする。
         self.link_buttons = []
+
+#       背景(bg)に使用する色のリスト。 tag 毎に色を割り当てるために予め使用する色を定義する。
+        list_colors = ["lightblue", "lightgreen", "lightyellow", "pink",
+                       "lightblue", "lightgreen", "lightyellow", "pink",
+                       "lightblue", "lightgreen", "lightyellow", "pink",
+                       "lightblue", "lightgreen", "lightyellow", "pink",
+                       "lightblue"]
+
+#       list_colors内の要素の指定に使用する。
+        color_index = 0
+
+#       ボタンとそれに割り当てられた背景色の関係を格納するディクショナリ。マウスが外れた後元の色
+#       に戻すのに使用する。
+        self.dic_bg = {}
+        prev_tag = ""
+
+#       folderlist から key を取得し
         for key in folderlist:
             title = key
             folder = folderlist[key]
 
+# 　　　　　  　　title から tag を抜き出し、color_index を決定する。
+#           ここでいう tag とは、 title のうち、行頭から ":" までの文字列を指す。
+            curr_tag = re.sub(": .*", "", title)
+
+            if prev_tag == "":
+                color_index = 0
+            elif curr_tag != prev_tag:
+                color_index += 1
+
+            prev_tag = curr_tag
+
+#           ボタンを生成する
             self.link_button = tk.Button(self)
             self.link_button["text"] = title
+            self.link_button["fg"] = "black"
+            self.link_button["bg"] = list_colors[color_index]
             self.link_button.bind("<Enter>", self.change_color_true)
             self.link_button.bind("<Leave>", self.change_color_false)
             self.link_button["command"] = self.run_it(folder)
             self.link_button["anchor"] = "w"
             self.link_button.pack(anchor="w", fill="x")
 
-            # Button ウェジットのおbジュジェクトをを操作用の配列に格納する。
+#           ボタンと背景色を関連付けたディクショナリ。
+            self.dic_bg[title] = list_colors[color_index]
+
+#           Button ウェジットのオブジェクトを管理用の配列に格納する。
             self.link_buttons.append(self.link_button)
 
 #       UPDATE ボタンの生成
@@ -55,7 +97,6 @@ class Application(tk.Frame):
                                 command=self.update_folderlist)
         self.update.pack(anchor="w")
         self.link_buttons.append(self.update)
-
 
 #       open list file ボタンの生成
         self.open_listfile = tk.Button(self, text="Open List File", fg="blue",
@@ -82,9 +123,10 @@ class Application(tk.Frame):
         event.widget["fg"] = "white"
 
     # ウィジェットからマウスが離れると、色を元に戻す
-    def change_color_false(application, event):
+    def change_color_false(self, event):
         event.widget["fg"] = "black"
-        event.widget["bg"] = "SystemButtonFace"
+#       ウィジェットの名称を使って dic_bg から、割り当てられた背景色を取得する
+        event.widget["bg"] = self.dic_bg[event.widget["text"]]
 
     def change_menubar_color_true(application, event):
         print("chagen_MenuColor")
