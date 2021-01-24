@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+script to make qrcode
+
+need
+    pyqrode
+    pypng
+
+"""
+
+import pyqrcode as qr
+
+qrcode = qr.create(content="ごはんの前にお風呂に入ろう")
+qrcode.png(file="test1.png", scale=5)
+
